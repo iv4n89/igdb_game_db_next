@@ -18,19 +18,30 @@ export default async function ConsolePage({ params }: Props) {
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-  const [gamesResponse, countResponse] = await Promise.all([
+  const [gamesResponse, countResponse, genresResponse] = await Promise.all([
     fetch(`${baseUrl}/api/igdb/games?platformId=${console.id}&limit=20`, {
       cache: "no-store",
     }),
     fetch(`${baseUrl}/api/igdb/games/count?platformId=${console.id}`, {
       cache: "no-store",
     }),
+    fetch(`${baseUrl}/api/igdb/genres?platformId=${console.id}`, {
+      cache: "no-store",
+    }),
   ]);
 
   const initialGames = await gamesResponse.json();
-  const {count: totalGames} = await countResponse.json();
-  
-  return <ConsoleDetailClient console={console} initialGames={initialGames} totalGames={totalGames} />;
+  const { count: totalGames } = await countResponse.json();
+  const availableGenres = await genresResponse.json();
+
+  return (
+    <ConsoleDetailClient
+      console={console}
+      initialGames={initialGames}
+      totalGames={totalGames}
+      availableGenres={availableGenres}
+    />
+  );
 }
 
 export async function generateStaticParams() {

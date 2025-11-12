@@ -6,6 +6,10 @@ export async function GET(request: NextRequest) {
   const platformId = searchParams.get("platformId");
   const limit = searchParams.get("limit") || "20";
   const offset = searchParams.get("offset") || "0";
+  const genre = searchParams.get("genre");
+  const letter = searchParams.get("letter");
+  const yearStart = searchParams.get("yearStart");
+  const yearEnd = searchParams.get("yearEnd");
 
   if (!platformId) {
     console.error("platformId is required");
@@ -16,10 +20,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const filters: Record<string, unknown> = {};
+    if (genre) filters.genre = parseInt(genre);
+    if (letter) filters.letter = letter;
+    if (yearStart) filters.yearStart = parseInt(yearStart);
+    if (yearEnd) filters.yearEnd = parseInt(yearEnd);
+
     const games = await fetchGamesForPlatform(
       parseInt(platformId),
       parseInt(limit),
-      parseInt(offset)
+      parseInt(offset),
+      Object.keys(filters).length > 0 ? filters : undefined
     );
 
     return NextResponse.json(games);

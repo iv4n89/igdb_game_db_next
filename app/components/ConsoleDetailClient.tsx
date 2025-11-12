@@ -4,24 +4,28 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Console, Game } from "../types";
+import { Console, FilterState, Game, Genre } from "../types";
 import GameCard from "./GameCard";
+import GameFilters from "./GameFilters";
 
 interface ConsoleDetailClientProps {
   console: Console;
   initialGames: Game[];
   totalGames?: number;
+  availableGenres: Genre[];
 }
 
 export default function ConsoleDetailClient({
   console: consoleData,
   initialGames,
   totalGames,
+  availableGenres,
 }: ConsoleDetailClientProps) {
   const [games, setGames] = useState<Game[]>(initialGames);
   const [offset, setOffset] = useState(20);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [filters, setFilters] = useState<FilterState>({});
 
   const containerRef = useRef<HTMLDivElement>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -39,9 +43,20 @@ export default function ConsoleDetailClient({
 
     setLoading(true);
     try {
-      const response = await fetch(
-        `/api/igdb/games?platformId=${consoleData.id}&limit=20&offset=${offset}`
-      );
+      const params = new URLSearchParams({
+        platformId: consoleData.id.toString(),
+        limit: "20",
+        offset: offset.toString(),
+      });
+
+      if (filters.genre) params.append("genre", filters.genre.toString());
+      if (filters.letter) params.append("letter", filters.letter);
+      if (filters.yearRange?.start)
+        params.append("yearStart", filters.yearRange.start.toString());
+      if (filters.yearRange?.end)
+        params.append("yearEnd", filters.yearRange.end.toString());
+
+      const response = await fetch(`/api/igdb/games?${params.toString()}`);
       const newGames: Game[] = await response.json();
 
       if (newGames.length === 0) {
@@ -52,6 +67,37 @@ export default function ConsoleDetailClient({
       }
     } catch (error) {
       console.error("Error loading more games:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilterChange = async (newFilters: FilterState) => {
+    setFilters(newFilters);
+    setLoading(true);
+    setOffset(20);
+    setHasMore(true);
+
+    try {
+      const params = new URLSearchParams({
+        platformId: consoleData.id.toString(),
+        limit: "20",
+        offset: "0",
+      });
+
+      if (newFilters.genre) params.append("genre", newFilters.genre.toString());
+      if (newFilters.letter) params.append("letter", newFilters.letter);
+      if (newFilters.yearRange?.start)
+        params.append("yearStart", newFilters.yearRange.start.toString());
+      if (newFilters.yearRange?.end)
+        params.append("yearEnd", newFilters.yearRange.end.toString());
+
+      const response = await fetch(`/api/igdb/games?${params.toString()}`);
+      const newGames: Game[] = await response.json();
+      setGames(newGames);
+      setHasMore(newGames.length >= 20);
+    } catch (error) {
+      console.error("Error applying filters:", error);
     } finally {
       setLoading(false);
     }
@@ -191,6 +237,10 @@ export default function ConsoleDetailClient({
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            <GameFilters
+              onFilterChange={handleFilterChange}
+              availableGenres={availableGenres}
+            />
             <h2 className="text-3xl font-bold text-white mb-8">
               Juegos destacados
               {games.length > 0 && (
