@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Console, Game } from "../types";
 import GameCard from "./GameCard";
 
-interface Props {
+interface ConsoleDetailClientProps {
   console: Console;
   initialGames: Game[];
 }
@@ -14,14 +14,13 @@ interface Props {
 export default function ConsoleDetailClient({
   console: consoleData,
   initialGames,
-}: Props) {
-  const [hasAnimated, setHasAnimated] = useState(false);
+}: ConsoleDetailClientProps) {
   const [games, setGames] = useState<Game[]>(initialGames);
   const [offset, setOffset] = useState(20);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const heroRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const { scrollY } = useScroll();
@@ -30,44 +29,39 @@ export default function ConsoleDetailClient({
   const consoleImageY = useTransform(scrollY, [0, 400], [0, -200]);
   const consoleImageOpacity = useTransform(scrollY, [0, 300, 400], [1, 0.5, 0]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setHasAnimated(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const headerLogoOpacity = useTransform(scrollY, [250, 400], [0, 1]);
 
-  useEffect(() => {
-    const loadMoreGames = async () => {
-      if (loading || !hasMore) return;
+  const loadMoreGames = async () => {
+    if (loading || !hasMore) return;
 
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/igdb/games?platformId=${consoleData.id}&limit=20&offset=${offset}`
-        );
-        const newGames: Game[] = await response.json();
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `/api/igdb/games?platformId=${consoleData.id}&limit=20&offset=${offset}`
+      );
+      const newGames: Game[] = await response.json();
 
-        if (newGames.length === 0) {
-          setHasMore(false);
-        } else {
-          setGames((prevGames) => [...prevGames, ...newGames]);
-          setOffset((prevOffset) => prevOffset + 20);
-        }
-      } catch (error) {
-        console.error("Error loading more games:", error);
-      } finally {
-        setLoading(false);
+      if (newGames.length === 0) {
+        setHasMore(false);
+      } else {
+        setGames((prev) => [...prev, ...newGames]);
+        setOffset((prev) => prev + 20);
       }
-    };
+    } catch (error) {
+      console.error("Error loading more games:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
           loadMoreGames();
         }
       },
-      {
-        threshold: 0.1,
-      }
+      { threshold: 0.1, rootMargin: "300px" }
     );
 
     const currentTarget = observerTarget.current;
@@ -80,10 +74,11 @@ export default function ConsoleDetailClient({
         observer.unobserve(currentTarget);
       }
     };
-  }, [hasMore, loading, offset, consoleData.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasMore, loading, offset]);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div ref={containerRef} className="min-h-screen bg-gray-900">
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800"
         initial={{ y: -100 }}
@@ -100,7 +95,7 @@ export default function ConsoleDetailClient({
 
           <motion.div
             className="flex items-center gap-3"
-            style={{ opacity: useTransform(scrollY, [300, 400], [0, 1]) }}
+            style={{ opacity: headerLogoOpacity }}
           >
             <span className="text-2xl">🎮</span>
             <span className="text-xl font-bold text-white">
@@ -110,11 +105,7 @@ export default function ConsoleDetailClient({
         </div>
       </motion.header>
 
-      <motion.div
-        ref={heroRef}
-        style={{ height: useTransform(scrollY, [0, 400], ["100vh", "30vh"]) }}
-        className="flex items-center justify-center overflow-hidden sticky top-0"
-      >
+      <div className="h-screen sticky top-0 flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 opacity-20"
           style={{
@@ -153,16 +144,17 @@ export default function ConsoleDetailClient({
             </motion.div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="relative z-30 bg-linear-to-b from-gray-900 to-black min-h-screen"
-      >
+      <div className="relative z-20 bg-linear-to-b from-gray-900 to-black min-h-screen pt-16">
         <div className="container mx-auto px-4 py-16">
-          <div className="mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-12"
+          >
             <h1 className="text-6xl font-bold text-white mb-4">
               {consoleData.name}
             </h1>
@@ -173,14 +165,21 @@ export default function ConsoleDetailClient({
               <span>•</span>
               <span>Generación {consoleData.generation}</span>
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h2 className="text-3xl font-bold text-white mb-8">
               Juegos destacados
-              <span className="text-lg text-gray-400 ml-3">
-                ({games.length} juegos)
-              </span>
+              {games.length > 0 && (
+                <span className="text-lg text-gray-400 ml-3">
+                  ({games.length} juegos)
+                </span>
+              )}
             </h2>
 
             {games.length > 0 ? (
@@ -209,7 +208,7 @@ export default function ConsoleDetailClient({
                       <span>Cargando más juegos...</span>
                     </div>
                   )}
-                  {!hasMore && (
+                  {!hasMore && !loading && (
                     <p className="text-gray-500 text-sm">
                       ✓ Has visto todos los juegos disponibles
                     </p>
@@ -224,9 +223,9 @@ export default function ConsoleDetailClient({
                 <p className="text-sm mt-2">Intenta más tarde</p>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

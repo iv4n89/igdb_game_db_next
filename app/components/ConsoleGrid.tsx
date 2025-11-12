@@ -12,8 +12,8 @@ export default function ConsoleGrid({consoles}: Props) {
         <section className="container mx-auto px-4 pb-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {
-                    consoles.map((console, index) => (
-                        <ConsoleCard key={console.id} console={console} index={index} />
+                    consoles.map((console) => (
+                        <ConsoleCard key={console.id} console={console} />
                     ))
                 }
             </div>
