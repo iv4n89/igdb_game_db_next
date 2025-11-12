@@ -17,10 +17,10 @@ export default function ConsoleCard({ console: consoleData }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05, y: -10 }}
-        className="relative group cursor-pointer"
+        className="relative group cursor-pointer h-full"
       >
         <div
-          className="rounded-2xl overflow-hidden shadow-2xl transition-all duration-300"
+          className="rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 h-full flex flex-col"
           style={{
             background: `linear-gradient(135deg, ${consoleData.color}20 0%, ${consoleData.color}40 100%)`,
             border: `2px solid ${consoleData.color}40`,
@@ -38,11 +38,11 @@ export default function ConsoleCard({ console: consoleData }: Props) {
             </div>
           </div>
 
-          <div className="p-6 bg-gray-900/50 backdrop-blur-sm">
-            <h3 className="text-2xl font-bold text-white mb-2">
+          <div className="p-6 bg-gray-900/50 backdrop-blur-sm grow flex flex-col">
+            <h3 className="text-2xl font-bold text-white mb-2 min-h-16 flex items-center">
               {consoleData.name}
             </h3>
-            <div className="flex justify-between items-center text-sm text-gray-300">
+            <div className="flex justify-between items-center text-sm text-gray-300 mt-auto">
               <span>{consoleData.manufacturer}</span>
               <span>{consoleData.releaseYear}</span>
             </div>

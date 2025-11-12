@@ -1,20 +1,22 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Console, Game } from "../types";
 import GameCard from "./GameCard";
-import Image from "next/image";
 
 interface ConsoleDetailClientProps {
   console: Console;
   initialGames: Game[];
+  totalGames?: number;
 }
 
 export default function ConsoleDetailClient({
   console: consoleData,
   initialGames,
+  totalGames,
 }: ConsoleDetailClientProps) {
   const [games, setGames] = useState<Game[]>(initialGames);
   const [offset, setOffset] = useState(20);
@@ -132,7 +134,7 @@ export default function ConsoleDetailClient({
             opacity: consoleImageOpacity,
           }}
         >
-          <div className="relative w-96 h-96">
+          <div className="relative w-96 h-96 md:w-150 md:h-150 lg:w-200 lg:h-200">
             <Image
               src={consoleData.imageUrl}
               alt={consoleData.name}
@@ -193,7 +195,7 @@ export default function ConsoleDetailClient({
               Juegos destacados
               {games.length > 0 && (
                 <span className="text-lg text-gray-400 ml-3">
-                  ({games.length} juegos)
+                  ({games.length} de {totalGames} juegos)
                 </span>
               )}
             </h2>

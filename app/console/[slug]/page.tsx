@@ -16,16 +16,21 @@ export default async function ConsolePage({ params }: Props) {
     notFound();
   }
 
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-    }/api/igdb/games?platformId=${console.id}&limit=20`,
-    { cache: "no-store" }
-  );
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-  const initialGames = await response.json();
+  const [gamesResponse, countResponse] = await Promise.all([
+    fetch(`${baseUrl}/api/igdb/games?platformId=${console.id}&limit=20`, {
+      cache: "no-store",
+    }),
+    fetch(`${baseUrl}/api/igdb/games/count?platformId=${console.id}`, {
+      cache: "no-store",
+    }),
+  ]);
 
-  return <ConsoleDetailClient console={console} initialGames={initialGames} />;
+  const initialGames = await gamesResponse.json();
+  const {count: totalGames} = await countResponse.json();
+  
+  return <ConsoleDetailClient console={console} initialGames={initialGames} totalGames={totalGames} />;
 }
 
 export async function generateStaticParams() {

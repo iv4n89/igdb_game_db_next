@@ -26,11 +26,31 @@ export async function getIGDBToken(): Promise<string> {
   return cachedToken;
 }
 
+export async function getGamesCount(platformId: number): Promise<number> {
+  const token = await getIGDBToken();
+
+  const response = await axios.post(
+    `https://api.igdb.com/v4/games/count`,
+    `
+      where platforms = (${platformId}) & cover != null;
+    `,
+    {
+      headers: {
+        "Client-ID": process.env.TWITCH_CLIENT_ID || "",
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data.count;
+}
+
 /**
  * Fetch games for a specific platform
- * @param platformId 
- * @param limit 
- * @param offset 
+ * @param platformId
+ * @param limit
+ * @param offset
  * @returns Promise<Game[]>
  */
 export async function fetchGamesForPlatform(
@@ -44,8 +64,8 @@ export async function fetchGamesForPlatform(
     "https://api.igdb.com/v4/games",
     `
         fields name, cover.url, first_release_date, rating, summary, platforms;
-        where platforms = (${platformId}) & rating != null & cover != null;
-        sort rating desc;
+        where platforms = (${platformId}) & cover != null;
+        sort first_release_date asc;
         limit ${limit};
         offset ${offset};
     `,
@@ -63,7 +83,7 @@ export async function fetchGamesForPlatform(
 
 /**
  * Search games by query string
- * @param query 
+ * @param query
  * @returns Promise<Game[]>
  */
 export async function searchGames(query: string): Promise<Game[]> {
