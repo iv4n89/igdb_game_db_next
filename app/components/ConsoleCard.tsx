@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Console } from "../types";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Props {
   console: Console;
@@ -14,7 +15,7 @@ export default function ConsoleCard({ console: consoleData }: Props) {
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5}}
+        transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05, y: -10 }}
         className="relative group cursor-pointer"
       >
@@ -26,10 +27,14 @@ export default function ConsoleCard({ console: consoleData }: Props) {
           }}
         >
           <div className="aspect-square relative bg-linear-to-br from-gray-900 to-gray-800 p-8">
-            <div className="relative w-full h-full">
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="text-6xl">🎮</span>
-              </div>
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src={consoleData.imageUrl}
+                alt={consoleData.name}
+                fill
+                className="object-contain drop-shadow-2xl"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              />
             </div>
           </div>
 

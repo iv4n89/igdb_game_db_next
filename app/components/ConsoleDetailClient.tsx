@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Console, Game } from "../types";
 import GameCard from "./GameCard";
+import Image from "next/image";
 
 interface ConsoleDetailClientProps {
   console: Console;
@@ -74,7 +75,7 @@ export default function ConsoleDetailClient({
         observer.unobserve(currentTarget);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, loading, offset]);
 
   return (
@@ -97,7 +98,14 @@ export default function ConsoleDetailClient({
             className="flex items-center gap-3"
             style={{ opacity: headerLogoOpacity }}
           >
-            <span className="text-2xl">🎮</span>
+            <div className="relative w-10 h-10">
+              <Image
+                src={consoleData.imageUrl}
+                alt={consoleData.name}
+                fill
+                className="object-contain"
+              />
+            </div>
             <span className="text-xl font-bold text-white">
               {consoleData.name}
             </span>
@@ -124,7 +132,15 @@ export default function ConsoleDetailClient({
             opacity: consoleImageOpacity,
           }}
         >
-          <div className="text-9xl">🎮</div>
+          <div className="relative w-96 h-96">
+            <Image
+              src={consoleData.imageUrl}
+              alt={consoleData.name}
+              fill
+              className="object-contain drop-shadow-2xl"
+              priority
+            />
+          </div>
         </motion.div>
 
         <motion.div
