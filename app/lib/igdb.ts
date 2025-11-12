@@ -96,7 +96,7 @@ export async function fetchGamesForPlatform(
   query = `
       fields name, cover.url, first_release_date, rating, summary, platforms, genres.name;
       where ${whereClause};
-      sort first_release_date desc;
+      sort first_release_date asc;
       limit ${limit};
       offset ${offset};
     `;

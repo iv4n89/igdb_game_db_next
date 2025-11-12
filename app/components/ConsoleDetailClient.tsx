@@ -254,7 +254,32 @@ export default function ConsoleDetailClient({
               <>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                   {games.map((game: Game, index: number) => (
-                    <GameCard key={`${game.id}-${index}`} game={game} />
+                    <div
+                      key={`${game.id}-${index}`}
+                      className={
+                        "relative " +
+                        (loading && Object.keys(filters).length > 0
+                          ? "opacity-50 pointer-events-none"
+                          : "")
+                      }
+                    >
+                      {loading && Object.keys(filters).length > 0 ? (
+                        <div className="flex items-center justify-center h-48 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
+                            className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full"
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      <GameCard game={game} />
+                    </div>
                   ))}
                 </div>
 
