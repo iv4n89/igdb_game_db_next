@@ -81,6 +81,27 @@ export async function fetchGamesForPlatform(
   return response.data;
 }
 
+export async function fetchGameDetail(gameId: number): Promise<Game> {
+  const token = await getIGDBToken();
+
+  const response = await axios.post(
+    `https://api.igdb.com/v4/games`,
+    `
+      fields name, cover.url, first_release_date, rating, summary, platforms, screenshots.url, genres.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, storyline, aggregated_rating;
+      where id = ${gameId};
+    `,
+    {
+      headers: {
+        "Client-ID": process.env.TWITCH_CLIENT_ID || "",
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data[0];
+}
+
 /**
  * Search games by query string
  * @param query

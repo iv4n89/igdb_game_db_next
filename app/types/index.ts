@@ -21,6 +21,23 @@ export interface Game {
     rating?: number;
     summary?: string;
     platforms?: number[];
+    screenshots?: {
+        id: number;
+        url: string;
+    }[];
+    genres?: {
+        id: number;
+        name: string;
+    }[];
+    involved_companies?: {
+        company: {
+            name: string;
+        };
+        developer: boolean;
+        publisher: boolean;
+    }[];
+    storyline?: string;
+    aggregated_rating?: number;
 }
 
 export interface IGDBAuthResponse {
