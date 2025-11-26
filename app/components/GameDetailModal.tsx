@@ -12,7 +12,7 @@ interface Props {
 export default function GameDetailModal({ game, isOpen, onClose }: Props) {
   const [gameDetail, setGameDetail] = useState<Game | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"details" | "media">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "media" | "related">("details");
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -172,6 +172,22 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                           />
                         )}
                       </button>
+                      <button
+                        onClick={() => setActiveTab("related")}
+                        className={`pb-4 text-lg font-mono tracking-wider transition-colors relative cursor-pointer ${
+                          activeTab === "related"
+                            ? "text-neon-blue"
+                            : "text-gray-500 hover:text-white"
+                        }`}
+                      >
+                        RELATED
+                        {activeTab === "related" && (
+                          <motion.div
+                            layoutId="activeTab"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon-blue shadow-[0_0_10px_#00ffff]"
+                          />
+                        )}
+                      </button>
                     </div>
                   </div>
 
@@ -303,13 +319,44 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                           </div>
                         )}
                       </motion.div>
-                    ) : (
+                    ) : activeTab === "media" ? (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
+                        {/* Videos Section */}
+                        {gameDetail.videos && gameDetail.videos.length > 0 && (
+                          <div className="mb-12">
+                            <h3 className="text-xl font-bold text-neon-pink mb-6 uppercase tracking-wider font-mono border-b border-white/10 pb-2 inline-block">
+                              VIDEOS
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              {gameDetail.videos.map((video) => (
+                                <div
+                                  key={video.id}
+                                  className="aspect-video border-2 border-white/20 shadow-lg bg-black"
+                                >
+                                  <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={`https://www.youtube.com/embed/${video.video_id}`}
+                                    title={video.name}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Screenshots Section */}
+                        <h3 className="text-xl font-bold text-neon-blue mb-6 uppercase tracking-wider font-mono border-b border-white/10 pb-2 inline-block">
+                          SCREENSHOTS
+                        </h3>
                         {gameDetail.screenshots &&
                         gameDetail.screenshots.length > 0 ? (
                           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -341,9 +388,52 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                             ))}
                           </div>
                         ) : (
-                          <div className="flex flex-col items-center justify-center py-20 text-gray-500 font-mono">
+                          <div className="flex flex-col items-center justify-center py-10 text-gray-500 font-mono">
                             <span className="text-4xl mb-2 opacity-50">📷</span>
                             <p>NO SCREENSHOTS AVAILABLE</p>
+                          </div>
+                        )}
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {gameDetail.similar_games &&
+                        gameDetail.similar_games.length > 0 ? (
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {gameDetail.similar_games.map((game) => (
+                              <div
+                                key={game.id}
+                                className="group relative aspect-[3/4] bg-gray-900 border border-white/10 hover:border-neon-purple transition-colors"
+                              >
+                                {game.cover?.url ? (
+                                  <Image
+                                    src={getCoverUrl(game.cover.url)!}
+                                    alt={game.name}
+                                    fill
+                                    className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                    unoptimized
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-4xl opacity-30">
+                                    👾
+                                  </div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-4">
+                                  <h4 className="text-white font-bold font-mono text-sm leading-tight group-hover:text-neon-purple transition-colors">
+                                    {game.name}
+                                  </h4>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-20 text-gray-500 font-mono">
+                            <span className="text-4xl mb-2 opacity-50">🎮</span>
+                            <p>NO RELATED GAMES FOUND</p>
                           </div>
                         )}
                       </motion.div>

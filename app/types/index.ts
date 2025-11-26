@@ -38,6 +38,19 @@ export interface Game {
   }[];
   storyline?: string;
   aggregated_rating?: number;
+  videos?: {
+    id: number;
+    video_id: string;
+    name: string;
+  }[];
+  similar_games?: {
+    id: number;
+    name: string;
+    cover?: {
+      id: number;
+      url: string;
+    };
+  }[];
 }
 
 export interface IGDBAuthResponse {

@@ -153,7 +153,7 @@ export async function fetchGameDetail(gameId: number): Promise<Game> {
   const response = await axios.post(
     `https://api.igdb.com/v4/games`,
     `
-      fields name, cover.url, first_release_date, rating, summary, platforms, screenshots.url, genres.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, storyline, aggregated_rating;
+      fields name, cover.url, first_release_date, rating, summary, platforms, screenshots.url, genres.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher, storyline, aggregated_rating, videos.video_id, videos.name, similar_games.name, similar_games.cover.url;
       where id = ${gameId};
     `,
     {
