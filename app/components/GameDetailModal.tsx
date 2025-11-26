@@ -107,12 +107,15 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed inset-4 pt-20 md:pt-8 lg:pt-0 md:inset-16 lg:inset-24 z-50 overflow-hidden"
           >
-            <div className="w-full h-full bg-gray-900 rounded-2xl shadow-2xl overflow-y-auto">
+            <div className="w-full h-full bg-black border-2 border-neon-purple shadow-[0_0_50px_rgba(188,19,254,0.3)] overflow-y-auto relative">
+              {/* Scanline overlay for modal */}
+              <div className="absolute inset-0 pointer-events-none z-0 opacity-20 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+              
               <button
                 onClick={onClose}
-                className="sticky cursor-pointer top-4 right-4 float-right z-10 w-10 h-10 flex items-center justify-center bg-gray-800/90 hover:bg-gray-700 rounded-full transition-colors"
+                className="sticky cursor-pointer top-4 right-4 float-right z-50 w-10 h-10 flex items-center justify-center bg-black border-2 border-neon-pink text-neon-pink hover:bg-neon-pink hover:text-black transition-colors"
               >
-                <span className="text-white text-2xl">×</span>
+                <span className="text-xl font-bold">X</span>
               </button>
 
               {loading ? (
@@ -130,42 +133,42 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
               ) : gameDetail ? (
                 <div className="flex flex-col h-full">
                   {/* Header Content */}
-                  <div className="p-8 pb-0">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  <div className="p-8 pb-0 relative z-10">
+                    <h1 className="text-2xl md:text-4xl font-bold text-white mb-6 uppercase tracking-wider" style={{ textShadow: "2px 2px 0px #bc13fe" }}>
                       {gameDetail.name}
                     </h1>
 
                     {/* Tabs Navigation */}
-                    <div className="flex gap-6 border-b border-gray-700 mb-6">
+                    <div className="flex gap-6 border-b-2 border-white/10 mb-6">
                       <button
                         onClick={() => setActiveTab("details")}
-                        className={`pb-4 text-lg font-medium transition-colors relative cursor-pointer ${
+                        className={`pb-4 text-lg font-mono tracking-wider transition-colors relative cursor-pointer ${
                           activeTab === "details"
-                            ? "text-purple-400"
-                            : "text-gray-400 hover:text-white"
+                            ? "text-neon-blue"
+                            : "text-gray-500 hover:text-white"
                         }`}
                       >
-                        Detalles
+                        DETAILS
                         {activeTab === "details" && (
                           <motion.div
                             layoutId="activeTab"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon-blue shadow-[0_0_10px_#00ffff]"
                           />
                         )}
                       </button>
                       <button
                         onClick={() => setActiveTab("media")}
-                        className={`pb-4 text-lg font-medium transition-colors relative cursor-pointer ${
+                        className={`pb-4 text-lg font-mono tracking-wider transition-colors relative cursor-pointer ${
                           activeTab === "media"
-                            ? "text-purple-400"
-                            : "text-gray-400 hover:text-white"
+                            ? "text-neon-blue"
+                            : "text-gray-500 hover:text-white"
                         }`}
                       >
-                        Multimedia
+                        MEDIA
                         {activeTab === "media" && (
                           <motion.div
                             layoutId="activeTab"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon-blue shadow-[0_0_10px_#00ffff]"
                           />
                         )}
                       </button>
@@ -183,7 +186,7 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                       >
                         <div className="flex flex-col md:flex-row gap-8 mb-8">
                           <div className="shrink-0">
-                            <div className="relative w-64 h-80 rounded-lg overflow-hidden shadow-2xl">
+                            <div className="relative w-64 h-80 rounded-none overflow-hidden shadow-2xl border-2 border-white/20">
                               {gameDetail.cover?.url ? (
                                 <Image
                                   src={getCoverUrl(gameDetail.cover.url)!}
@@ -193,79 +196,81 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                                   unoptimized
                                 />
                               ) : (
-                                <div className="w-full h-full bg-gray-800 flex items-center justify-center text-6xl">
-                                  🎮
+                                <div className="w-full h-full bg-gray-900 flex items-center justify-center text-6xl opacity-50">
+                                  👾
                                 </div>
                               )}
+                              {/* Scanline overlay for cover */}
+                              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none opacity-50" />
                             </div>
                           </div>
 
-                          <div className="grow">
+                          <div className="grow font-mono">
                             <div className="flex gap-6 mb-6">
                               {gameDetail.rating && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-yellow-400 text-2xl">
-                                    ⭐
+                                  <span className="text-neon-pink text-2xl">
+                                    ★
                                   </span>
                                   <div>
                                     <div className="text-2xl font-bold text-white">
                                       {Math.round(gameDetail.rating)}
                                     </div>
-                                    <div className="text-xs text-gray-400">
-                                      Rating IGDB
+                                    <div className="text-xs text-gray-400 tracking-wider">
+                                      IGDB RATING
                                     </div>
                                   </div>
                                 </div>
                               )}
                               {gameDetail.aggregated_rating && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-green-400 text-2xl">
-                                    📊
+                                  <span className="text-neon-blue text-2xl">
+                                    ●
                                   </span>
                                   <div>
                                     <div className="text-2xl font-bold text-white">
                                       {Math.round(gameDetail.aggregated_rating)}
                                     </div>
-                                    <div className="text-xs text-gray-400">
-                                      Rating Crítica
+                                    <div className="text-xs text-gray-400 tracking-wider">
+                                      CRITIC RATING
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm border-t border-white/10 pt-4">
                               <div>
-                                <span className="text-gray-400">
-                                  Fecha de lanzamiento:
+                                <span className="text-gray-500 uppercase tracking-wider block text-xs mb-1">
+                                  RELEASE DATE
                                 </span>
-                                <span className="text-white ml-2">
+                                <span className="text-white">
                                   {formatDate(gameDetail.first_release_date)}
                                 </span>
                               </div>
                               <div>
-                                <span className="text-gray-400">
-                                  Desarrollador:
+                                <span className="text-gray-500 uppercase tracking-wider block text-xs mb-1">
+                                  DEVELOPER
                                 </span>
-                                <span className="text-white ml-2">
+                                <span className="text-white">
                                   {getDevelopers()}
                                 </span>
                               </div>
                               <div>
-                                <span className="text-gray-400">
-                                  Publicador:
+                                <span className="text-gray-500 uppercase tracking-wider block text-xs mb-1">
+                                  PUBLISHER
                                 </span>
-                                <span className="text-white ml-2">
+                                <span className="text-white">
                                   {getPublishers()}
                                 </span>
                               </div>
                               {gameDetail.genres &&
                                 gameDetail.genres.length > 0 && (
                                   <div>
-                                    <span className="text-gray-400">
-                                      Géneros:
+                                    <span className="text-gray-500 uppercase tracking-wider block text-xs mb-1">
+                                      GENRES
                                     </span>
-                                    <span className="text-white ml-2">
+                                    <span className="text-white">
                                       {gameDetail.genres
                                         .map((g) => g.name)
                                         .join(", ")}
@@ -277,22 +282,22 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                         </div>
 
                         {gameDetail.summary && (
-                          <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-4">
-                              Descripción
+                          <div className="mb-8 font-mono">
+                            <h2 className="text-xl font-bold text-neon-pink mb-4 uppercase tracking-wider border-b border-white/10 pb-2 inline-block">
+                              SUMMARY
                             </h2>
-                            <p className="text-gray-300 leading-relaxed">
+                            <p className="text-gray-300 leading-relaxed text-lg">
                               {gameDetail.summary}
                             </p>
                           </div>
                         )}
 
                         {gameDetail.storyline && (
-                          <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-4">
-                              Historia
+                          <div className="mb-8 font-mono">
+                            <h2 className="text-xl font-bold text-neon-blue mb-4 uppercase tracking-wider border-b border-white/10 pb-2 inline-block">
+                              STORYLINE
                             </h2>
-                            <p className="text-gray-300 leading-relaxed">
+                            <p className="text-gray-300 leading-relaxed text-lg">
                               {gameDetail.storyline}
                             </p>
                           </div>
@@ -311,7 +316,7 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                             {gameDetail.screenshots.map((screenshot, index) => (
                               <div
                                 key={screenshot.id}
-                                className="relative aspect-video rounded-lg overflow-hidden shadow-lg group cursor-pointer"
+                                className="relative aspect-video rounded-none overflow-hidden shadow-lg group cursor-pointer border border-white/20 hover:border-neon-pink transition-colors"
                                 onClick={() =>
                                   setSelectedImage(
                                     getOriginalScreenshotUrl(screenshot.url)
@@ -327,18 +332,18 @@ export default function GameDetailModal({ game, isOpen, onClose }: Props) {
                                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                                   unoptimized
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                  <span className="text-white font-medium bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm text-sm">
-                                    Ver
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                  <span className="text-neon-pink font-bold font-mono tracking-widest border-2 border-neon-pink px-3 py-1 bg-black/50">
+                                    VIEW
                                   </span>
                                 </div>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-                            <span className="text-4xl mb-2">📷</span>
-                            <p>No hay capturas de pantalla disponibles</p>
+                          <div className="flex flex-col items-center justify-center py-20 text-gray-500 font-mono">
+                            <span className="text-4xl mb-2 opacity-50">📷</span>
+                            <p>NO SCREENSHOTS AVAILABLE</p>
                           </div>
                         )}
                       </motion.div>

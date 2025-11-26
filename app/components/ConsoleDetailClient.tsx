@@ -129,7 +129,7 @@ export default function ConsoleDetailClient({
   return (
     <div ref={containerRef} className="min-h-screen bg-gray-900">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-800"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b-2 border-white/10"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -137,9 +137,9 @@ export default function ConsoleDetailClient({
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link
             href="/"
-            className="text-white hover:text-gray-300 transition-colors"
+            className="text-white hover:text-neon-pink transition-colors font-mono tracking-wider"
           >
-            ← Volver
+            ← BACK
           </Link>
 
           <motion.div
@@ -154,7 +154,10 @@ export default function ConsoleDetailClient({
                 className="object-contain"
               />
             </div>
-            <span className="text-xl font-bold text-white">
+            <span 
+              className="text-xl font-bold text-white uppercase"
+              style={{ textShadow: `2px 2px 0px ${consoleData.color}` }}
+            >
               {consoleData.name}
             </span>
           </motion.div>
@@ -167,6 +170,14 @@ export default function ConsoleDetailClient({
           style={{
             background: `radial-gradient(circle at center, ${consoleData.color} 0%, transparent 70%)`,
           }}
+        />
+        
+        <div className="absolute inset-0 opacity-10" 
+             style={{ 
+               backgroundImage: `linear-gradient(${consoleData.color} 1px, transparent 1px), linear-gradient(90deg, ${consoleData.color} 1px, transparent 1px)`,
+               backgroundSize: '40px 40px',
+               maskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)'
+             }} 
         />
 
         <motion.div
@@ -186,7 +197,7 @@ export default function ConsoleDetailClient({
               src={consoleData.imageUrl}
               alt={consoleData.name}
               fill
-              className="object-contain drop-shadow-2xl"
+              className="object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]"
               priority
             />
           </div>
@@ -199,8 +210,8 @@ export default function ConsoleDetailClient({
           transition={{ delay: 0.8, duration: 0.5 }}
           style={{ opacity: useTransform(scrollY, [0, 100], [1, 0]) }}
         >
-          <div className="flex flex-col items-center gap-2 text-gray-400">
-            <span className="text-sm">Scroll para explorar</span>
+          <div className="flex flex-col items-center gap-2 text-neon-blue font-mono animate-pulse">
+            <span className="text-sm tracking-widest">SCROLL TO START</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
@@ -211,24 +222,27 @@ export default function ConsoleDetailClient({
         </motion.div>
       </div>
 
-      <div className="relative z-20 bg-linear-to-b from-gray-900 to-black min-h-screen pt-16">
+      <div className="relative z-20 bg-black min-h-screen pt-16 border-t-4" style={{ borderColor: consoleData.color }}>
         <div className="container mx-auto px-4 py-16">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-12 text-center"
           >
-            <h1 className="text-6xl font-bold text-white mb-4">
+            <h1 
+              className="text-4xl md:text-6xl font-bold text-white mb-6 uppercase tracking-wider"
+              style={{ textShadow: `4px 4px 0px ${consoleData.color}` }}
+            >
               {consoleData.name}
             </h1>
-            <div className="flex gap-6 text-gray-300 text-lg">
-              <span>{consoleData.manufacturer}</span>
-              <span>•</span>
-              <span>{consoleData.releaseYear}</span>
-              <span>•</span>
-              <span>Generación {consoleData.generation}</span>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-gray-300 text-lg font-mono border-y border-white/10 py-4 bg-white/5">
+              <span className="text-neon-pink">MAKER: <span className="text-white">{consoleData.manufacturer}</span></span>
+              <span className="hidden md:inline text-white/20">|</span>
+              <span className="text-neon-blue">YEAR: <span className="text-white">{consoleData.releaseYear}</span></span>
+              <span className="hidden md:inline text-white/20">|</span>
+              <span className="text-neon-purple">GEN: <span className="text-white">0{consoleData.generation}</span></span>
             </div>
           </motion.div>
 

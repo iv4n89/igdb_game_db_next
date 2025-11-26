@@ -78,18 +78,18 @@ export default function GameFilters({
       <div className="mb-4 lg:hidden">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full cursor-pointer px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors flex items-center justify-between"
+          className="w-full cursor-pointer px-4 py-3 bg-black border border-neon-purple text-white transition-colors flex items-center justify-between hover:bg-neon-purple/20"
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-2 font-mono">
             <span>🔍</span>
-            <span>Filtros</span>
+            <span>SEARCH FILTERS</span>
             {hasActiveFilters && (
-              <span className="px-2 py-0.5 bg-purple-500 text-xs rounded-full">
-                Activos
+              <span className="px-2 py-0.5 bg-neon-pink text-black text-xs font-bold animate-pulse">
+                ACTIVE
               </span>
             )}
           </span>
-          <span className="text-xl">{isExpanded ? "▼" : "▶"}</span>
+          <span className="text-xl text-neon-blue">{isExpanded ? "▼" : "▶"}</span>
         </button>
       </div>
 
@@ -100,42 +100,50 @@ export default function GameFilters({
         }}
         className="overflow-hidden lg:h-auto!"
       >
-        <div className="space-y-6 bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-white">Filtrar juegos</h3>
+        <div className="space-y-8 bg-black/80 backdrop-blur-sm border-2 border-white/10 p-6 relative">
+          {/* Decorative corner accents - positioned to overlap the border */}
+          <div className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-2 border-l-2 border-[#ff00ff] z-10" />
+          <div className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-2 border-r-2 border-[#ff00ff] z-10" />
+          <div className="absolute -bottom-[34px] -left-[2px] w-4 h-4 border-b-2 border-l-2 border-[#ff00ff] z-10" />
+          <div className="absolute -bottom-[34px] -right-[2px] w-4 h-4 border-b-2 border-r-2 border-[#ff00ff] z-10" />
+
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <h3 className="text-xl font-bold text-[#00ffff] uppercase tracking-wider" style={{ textShadow: "2px 2px 0px rgba(0,255,255,0.3)" }}>
+              FILTER DATABASE
+            </h3>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="px-3 cursor-pointer py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-sm rounded-lg transition-colors"
+                className="px-3 cursor-pointer py-1 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white text-sm font-mono transition-colors uppercase"
               >
-                Limpiar filtros
+                [ CLEAR SYSTEM ]
               </button>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-3">
-              Género
+            <label className="block text-sm font-bold text-[#bc13fe] mb-3 uppercase tracking-wider font-mono">
+              GENRE SELECTION
             </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => handleGenreChange(undefined)}
-                className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 cursor-pointer text-sm font-mono transition-all border ${
                   !selectedGenre
-                    ? "bg-purple-500 text-white shadow-lg shadow-purple-500/30"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-[#bc13fe] text-black border-[#bc13fe] font-bold shadow-[0_0_10px_rgba(188,19,254,0.5)]"
+                    : "bg-transparent text-gray-400 border-gray-700 hover:border-[#bc13fe] hover:text-[#bc13fe]"
                 }`}
               >
-                Todos
+                ALL
               </button>
               {availableGenres.map((genre) => (
                 <button
                   key={genre.id}
                   onClick={() => handleGenreChange(genre.id)}
-                  className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-medium transition-all ${
+                  className={`px-4 py-2 cursor-pointer text-sm font-mono transition-all border ${
                     selectedGenre === genre.id
-                      ? "bg-purple-500 text-white shadow-lg shadow-purple-500/30"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      ? "bg-[#bc13fe] text-black border-[#bc13fe] font-bold shadow-[0_0_10px_rgba(188,19,254,0.5)]"
+                      : "bg-transparent text-gray-400 border-gray-700 hover:border-[#bc13fe] hover:text-[#bc13fe]"
                   }`}
                 >
                   {genre.name}
@@ -145,8 +153,8 @@ export default function GameFilters({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-3">
-              Década de lanzamiento
+            <label className="block text-sm font-bold text-[#00ffff] mb-3 uppercase tracking-wider font-mono">
+              TIME PERIOD
             </label>
             <div className="flex flex-wrap gap-2">
               {YEAR_RANGES.map((range, index) => (
@@ -159,12 +167,12 @@ export default function GameFilters({
                         : { start: range.start, end: range.end }
                     )
                   }
-                  className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-medium transition-all ${
+                  className={`px-4 py-2 cursor-pointer text-sm font-mono transition-all border ${
                     (!selectedYearRange && range.value === null) ||
                     (selectedYearRange?.start === range.start &&
                       selectedYearRange?.end === range.end)
-                      ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      ? "bg-[#00ffff] text-black border-[#00ffff] font-bold shadow-[0_0_10px_rgba(0,255,255,0.5)]"
+                      : "bg-transparent text-gray-400 border-gray-700 hover:border-[#00ffff] hover:text-[#00ffff]"
                   }`}
                 >
                   {range.label}
@@ -174,36 +182,36 @@ export default function GameFilters({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-3">
-              Letra inicial
+            <label className="block text-sm font-bold text-[#ff00ff] mb-3 uppercase tracking-wider font-mono">
+              ALPHABETICAL INDEX
             </label>
             <div className="grid grid-cols-9 md:grid-cols-14 lg:grid-cols-18 gap-1">
               <button
                 onClick={() => handleLetterChange(undefined)}
-                className={`aspect-square cursor-pointer flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+                className={`aspect-square cursor-pointer flex items-center justify-center text-sm font-bold transition-all border ${
                   !selectedLetter
-                    ? "bg-green-500 text-white shadow-lg shadow-green-500/30"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-[#ff00ff] text-black border-[#ff00ff] shadow-[0_0_10px_rgba(255,0,255,0.5)]"
+                    : "bg-transparent text-gray-400 border-gray-700 hover:border-[#ff00ff] hover:text-[#ff00ff]"
                 }`}
               >
-                ✕
+                *
               </button>
               {ALPHABET.map((letter) => (
                 <button
                   key={letter}
                   onClick={() => handleLetterChange(letter)}
-                  className={`aspect-square cursor-pointer flex items-center justify-center rounded-lg text-sm font-bold transition-all ${
+                  className={`aspect-square cursor-pointer flex items-center justify-center text-sm font-bold transition-all border ${
                     selectedLetter === letter
-                      ? "bg-green-500 text-white shadow-lg shadow-green-500/30"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      ? "bg-[#ff00ff] text-black border-[#ff00ff] shadow-[0_0_10px_rgba(255,0,255,0.5)]"
+                      : "bg-transparent text-gray-400 border-gray-700 hover:border-[#ff00ff] hover:text-[#ff00ff]"
                   }`}
                 >
                   {letter}
                 </button>
               ))}
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              # = Juegos que empiezan con números
+            <p className="text-xs text-gray-500 mt-2 font-mono">
+              [ # = NUMERIC TITLES ]
             </p>
           </div>
         </div>

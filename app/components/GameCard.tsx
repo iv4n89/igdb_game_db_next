@@ -34,8 +34,8 @@ export default function GameCard({ game }: Props) {
           className="group cursor-pointer relative z-10"
           onClick={() => setIsModalOpen(true)}
         >
-          <div className="rounded-lg overflow-hidden shadow-lg bg-gray-800 transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-purple-500/20">
-            <div className="aspect-3/4 relative bg-gray-900">
+          <div className="rounded-none overflow-hidden shadow-lg bg-black border border-white/20 transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(188,19,254,0.5)] group-hover:border-neon-purple">
+            <div className="aspect-3/4 relative bg-gray-900 border-b border-white/10">
               {coverUrl ? (
                 <Image
                   src={coverUrl}
@@ -49,20 +49,26 @@ export default function GameCard({ game }: Props) {
                   }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl">
-                  🎮
+                <div className="w-full h-full flex items-center justify-center text-6xl opacity-50">
+                  👾
                 </div>
               )}
+              
+              {/* Scanline overlay for cover */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none opacity-50" />
             </div>
 
-            <div className="p-3 bg-gray-800">
-              <h3 className="text-sm font-semibold text-white line-clamp-2 mb-1 min-h-10">
+            <div className="p-3 bg-black relative">
+              <h3 className="text-xs font-bold text-white line-clamp-2 mb-2 min-h-[2.5em] font-mono tracking-wide group-hover:text-neon-pink transition-colors">
                 {game.name}
               </h3>
               {game.rating && (
-                <div className="flex items-center gap-1 text-xs text-gray-400">
-                  <span>⭐</span>
-                  <span>{Math.round(game.rating)}/100</span>
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-1 text-neon-blue">
+                    <span>★</span>
+                    <span>{Math.round(game.rating)}</span>
+                  </div>
+                  <span className="text-gray-600 text-[10px]">RATING</span>
                 </div>
               )}
             </div>
