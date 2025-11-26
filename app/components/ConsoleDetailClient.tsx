@@ -171,6 +171,7 @@ export default function ConsoleDetailClient({
 
         <motion.div
           className="relative z-10"
+          layoutId={`console-image-${consoleData.id}`}
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
